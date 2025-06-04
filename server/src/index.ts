@@ -15,6 +15,7 @@ import { getTasks } from './handlers/get_tasks';
 import { getTask } from './handlers/get_task';
 import { updateTask } from './handlers/update_task';
 import { deleteTask } from './handlers/delete_task';
+import { deleteAllTasks } from './handlers/delete_all_tasks';
 
 const t = initTRPC.create({
   transformer: superjson,
@@ -45,6 +46,22 @@ const appRouter = router({
 
 export type AppRouter = typeof appRouter;
 
+// Scheduled job to delete all tasks every 30 seconds
+function startScheduledTaskDeletion() {
+  const deleteInterval = setInterval(async () => {
+    try {
+      await deleteAllTasks();
+    } catch (error) {
+      console.error('Scheduled task deletion error:', error);
+    }
+  }, 30000); // 30 seconds in milliseconds
+
+  console.log('Scheduled task deletion job started (runs every 30 seconds)');
+  
+  // Return the interval ID for cleanup if needed
+  return deleteInterval;
+}
+
 async function start() {
   const port = process.env['SERVER_PORT'] || 2022;
   const server = createHTTPServer({
@@ -58,6 +75,9 @@ async function start() {
   });
   server.listen(port);
   console.log(`TRPC server listening at port: ${port}`);
+  
+  // Start the scheduled job
+  startScheduledTaskDeletion();
 }
 
 start();
