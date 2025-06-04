@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -7,9 +6,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { trpc } from '@/utils/trpc';
 import { useState, useEffect, useCallback } from 'react';
 import { Trash2, Edit3, Plus, CheckCircle2, Circle } from 'lucide-react';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 import type { Task, CreateTaskInput, UpdateTaskInput } from '../../server/src/schema';
 
-function App() {
+function AppContent() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -103,20 +104,23 @@ function App() {
   const pendingTasks = tasks.filter((task: Task) => !task.completed);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 transition-colors">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+        <div className="text-center mb-8 relative">
+          <div className="absolute top-0 right-0">
+            <ThemeSwitcher />
+          </div>
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
             ✅ My Tasks
           </h1>
-          <p className="text-gray-600">Stay organized and get things done!</p>
+          <p className="text-gray-600 dark:text-gray-300">Stay organized and get things done!</p>
         </div>
 
         {/* Add New Task Form */}
-        <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="mb-6 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg text-gray-800 dark:text-gray-100">
               <Plus className="w-5 h-5 text-blue-600" />
               Add New Task
             </CardTitle>
@@ -135,7 +139,7 @@ function App() {
               <Button 
                 type="submit" 
                 disabled={isLoading || !newTaskTitle.trim()}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               >
                 {isLoading ? 'Adding...' : 'Add Task'}
               </Button>
@@ -145,33 +149,33 @@ function App() {
 
         {/* Tasks Statistics */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <Card className="text-center bg-white/60 backdrop-blur-sm border-0">
+          <Card className="text-center bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-800">{tasks.length}</div>
-              <div className="text-sm text-gray-600">Total Tasks</div>
+              <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{tasks.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Total Tasks</div>
             </CardContent>
           </Card>
-          <Card className="text-center bg-green-50/80 backdrop-blur-sm border-0">
+          <Card className="text-center bg-green-50/80 dark:bg-green-900/30 backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-green-600">{completedTasks.length}</div>
-              <div className="text-sm text-green-700">Completed</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{completedTasks.length}</div>
+              <div className="text-sm text-green-700 dark:text-green-300">Completed</div>
             </CardContent>
           </Card>
-          <Card className="text-center bg-orange-50/80 backdrop-blur-sm border-0">
+          <Card className="text-center bg-orange-50/80 dark:bg-orange-900/30 backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-orange-600">{pendingTasks.length}</div>
-              <div className="text-sm text-orange-700">Pending</div>
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{pendingTasks.length}</div>
+              <div className="text-sm text-orange-700 dark:text-orange-300">Pending</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Tasks List */}
         {tasks.length === 0 ? (
-          <Card className="text-center py-12 bg-white/60 backdrop-blur-sm border-0">
+          <Card className="text-center py-12 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-0">
             <CardContent>
               <div className="text-6xl mb-4">📝</div>
-              <p className="text-gray-500 text-lg">No tasks yet!</p>
-              <p className="text-gray-400">Add your first task above to get started.</p>
+              <p className="text-gray-500 dark:text-gray-400 text-lg">No tasks yet!</p>
+              <p className="text-gray-400 dark:text-gray-500">Add your first task above to get started.</p>
             </CardContent>
           </Card>
         ) : (
@@ -179,12 +183,12 @@ function App() {
             {/* Pending Tasks */}
             {pendingTasks.length > 0 && (
               <div>
-                <h2 className="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                   <Circle className="w-5 h-5 text-orange-500" />
                   Pending Tasks ({pendingTasks.length})
                 </h2>
                 {pendingTasks.map((task: Task) => (
-                  <Card key={task.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-md transition-all">
+                  <Card key={task.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-md transition-all">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <Checkbox
@@ -207,7 +211,7 @@ function App() {
                               }}
                               autoFocus
                             />
-                            <Button size="sm" onClick={handleSaveEdit} className="bg-green-600 hover:bg-green-700">
+                            <Button size="sm" onClick={handleSaveEdit} className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
                               Save
                             </Button>
                             <Button size="sm" variant="outline" onClick={handleCancelEdit}>
@@ -216,7 +220,7 @@ function App() {
                           </div>
                         ) : (
                           <>
-                            <span className={`flex-1 ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                            <span className={`flex-1 ${task.completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
                               {task.title}
                             </span>
                             <div className="flex gap-1">
@@ -224,7 +228,7 @@ function App() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleStartEdit(task)}
-                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
                               >
                                 <Edit3 className="w-4 h-4" />
                               </Button>
@@ -233,7 +237,7 @@ function App() {
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                    className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
@@ -249,7 +253,7 @@ function App() {
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                     <AlertDialogAction
                                       onClick={() => handleDeleteTask(task.id)}
-                                      className="bg-red-600 hover:bg-red-700"
+                                      className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
                                     >
                                       Delete
                                     </AlertDialogAction>
@@ -260,7 +264,7 @@ function App() {
                           </>
                         )}
                       </div>
-                      <div className="text-xs text-gray-400 mt-2 ml-7">
+                      <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 ml-7">
                         Created: {task.created_at.toLocaleDateString()}
                       </div>
                     </CardContent>
@@ -272,12 +276,12 @@ function App() {
             {/* Completed Tasks */}
             {completedTasks.length > 0 && (
               <div className="mt-8">
-                <h2 className="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
                   Completed Tasks ({completedTasks.length})
                 </h2>
                 {completedTasks.map((task: Task) => (
-                  <Card key={task.id} className="bg-green-50/60 backdrop-blur-sm border-green-200/50 shadow-sm">
+                  <Card key={task.id} className="bg-green-50/60 dark:bg-green-900/30 backdrop-blur-sm border-green-200/50 dark:border-green-800/50 shadow-sm">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <Checkbox
@@ -300,7 +304,7 @@ function App() {
                               }}
                               autoFocus
                             />
-                            <Button size="sm" onClick={handleSaveEdit} className="bg-green-600 hover:bg-green-700">
+                            <Button size="sm" onClick={handleSaveEdit} className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
                               Save
                             </Button>
                             <Button size="sm" variant="outline" onClick={handleCancelEdit}>
@@ -309,7 +313,7 @@ function App() {
                           </div>
                         ) : (
                           <>
-                            <span className="flex-1 line-through text-gray-500">
+                            <span className="flex-1 line-through text-gray-500 dark:text-gray-400">
                               {task.title}
                             </span>
                             <div className="flex gap-1">
@@ -317,7 +321,7 @@ function App() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleStartEdit(task)}
-                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
                               >
                                 <Edit3 className="w-4 h-4" />
                               </Button>
@@ -326,7 +330,7 @@ function App() {
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                    className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
@@ -342,7 +346,7 @@ function App() {
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                     <AlertDialogAction
                                       onClick={() => handleDeleteTask(task.id)}
-                                      className="bg-red-600 hover:bg-red-700"
+                                      className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
                                     >
                                       Delete
                                     </AlertDialogAction>
@@ -353,7 +357,7 @@ function App() {
                           </>
                         )}
                       </div>
-                      <div className="text-xs text-gray-400 mt-2 ml-7">
+                      <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 ml-7">
                         Created: {task.created_at.toLocaleDateString()}
                       </div>
                     </CardContent>
@@ -365,6 +369,19 @@ function App() {
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
