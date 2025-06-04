@@ -104,24 +104,24 @@ function AppContent() {
   const pendingTasks = tasks.filter((task: Task) => !task.completed);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 transition-colors">
+    <div className="min-h-screen bg-background text-foreground p-4 transition-colors">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 relative">
           <div className="absolute top-0 right-0">
             <ThemeSwitcher />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             ✅ My Tasks
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">Stay organized and get things done!</p>
+          <p className="text-muted-foreground">Stay organized and get things done!</p>
         </div>
 
         {/* Add New Task Form */}
-        <Card className="mb-6 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+        <Card className="mb-6 shadow-lg border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg text-gray-800 dark:text-gray-100">
-              <Plus className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-lg text-card-foreground">
+              <Plus className="w-5 h-5 text-primary" />
               Add New Task
             </CardTitle>
           </CardHeader>
@@ -139,7 +139,6 @@ function AppContent() {
               <Button 
                 type="submit" 
                 disabled={isLoading || !newTaskTitle.trim()}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               >
                 {isLoading ? 'Adding...' : 'Add Task'}
               </Button>
@@ -149,33 +148,33 @@ function AppContent() {
 
         {/* Tasks Statistics */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <Card className="text-center bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-0">
+          <Card className="text-center bg-card/60 backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{tasks.length}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Total Tasks</div>
+              <div className="text-2xl font-bold text-card-foreground">{tasks.length}</div>
+              <div className="text-sm text-muted-foreground">Total Tasks</div>
             </CardContent>
           </Card>
-          <Card className="text-center bg-green-50/80 dark:bg-green-900/30 backdrop-blur-sm border-0">
+          <Card className="text-center bg-[var(--completed-bg)] backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{completedTasks.length}</div>
-              <div className="text-sm text-green-700 dark:text-green-300">Completed</div>
+              <div className="text-2xl font-bold text-[var(--completed-text)]">{completedTasks.length}</div>
+              <div className="text-sm text-[var(--completed-text)]/80">Completed</div>
             </CardContent>
           </Card>
-          <Card className="text-center bg-orange-50/80 dark:bg-orange-900/30 backdrop-blur-sm border-0">
+          <Card className="text-center bg-[var(--pending-bg)] backdrop-blur-sm border-0">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{pendingTasks.length}</div>
-              <div className="text-sm text-orange-700 dark:text-orange-300">Pending</div>
+              <div className="text-2xl font-bold text-[var(--pending-text)]">{pendingTasks.length}</div>
+              <div className="text-sm text-[var(--pending-text)]/80">Pending</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Tasks List */}
         {tasks.length === 0 ? (
-          <Card className="text-center py-12 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-0">
+          <Card className="text-center py-12 bg-card/60 backdrop-blur-sm border-0">
             <CardContent>
               <div className="text-6xl mb-4">📝</div>
-              <p className="text-gray-500 dark:text-gray-400 text-lg">No tasks yet!</p>
-              <p className="text-gray-400 dark:text-gray-500">Add your first task above to get started.</p>
+              <p className="text-muted-foreground text-lg">No tasks yet!</p>
+              <p className="text-muted-foreground/70">Add your first task above to get started.</p>
             </CardContent>
           </Card>
         ) : (
@@ -183,12 +182,12 @@ function AppContent() {
             {/* Pending Tasks */}
             {pendingTasks.length > 0 && (
               <div>
-                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                  <Circle className="w-5 h-5 text-orange-500" />
+                <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Circle className="w-5 h-5 text-[var(--pending-text)]" />
                   Pending Tasks ({pendingTasks.length})
                 </h2>
                 {pendingTasks.map((task: Task) => (
-                  <Card key={task.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-md transition-all">
+                  <Card key={task.id} className="bg-card/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-md transition-all">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <Checkbox
@@ -220,7 +219,7 @@ function AppContent() {
                           </div>
                         ) : (
                           <>
-                            <span className={`flex-1 ${task.completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                            <span className={`flex-1 ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                               {task.title}
                             </span>
                             <div className="flex gap-1">
@@ -276,12 +275,12 @@ function AppContent() {
             {/* Completed Tasks */}
             {completedTasks.length > 0 && (
               <div className="mt-8">
-                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-[var(--completed-text)]" />
                   Completed Tasks ({completedTasks.length})
                 </h2>
                 {completedTasks.map((task: Task) => (
-                  <Card key={task.id} className="bg-green-50/60 dark:bg-green-900/30 backdrop-blur-sm border-green-200/50 dark:border-green-800/50 shadow-sm">
+                  <Card key={task.id} className="bg-[var(--completed-bg)] backdrop-blur-sm border-[var(--completed-text)]/20 shadow-sm">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <Checkbox
@@ -313,7 +312,7 @@ function AppContent() {
                           </div>
                         ) : (
                           <>
-                            <span className="flex-1 line-through text-gray-500 dark:text-gray-400">
+                            <span className="flex-1 line-through text-[var(--completed-text)]/70">
                               {task.title}
                             </span>
                             <div className="flex gap-1">
